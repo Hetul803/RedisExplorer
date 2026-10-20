@@ -1,3 +1,4 @@
+redis-explorer.vercel.app
 # RedisExplorer
 
 RedisExplorer is a visual, interactive learning platform for exploring Redis and core NoSQL concepts. It pairs a React + Vite student dashboard with a small Express API backed by a real Redis server. The cache lesson uses a labeled, in-memory sample catalog fixture as its source so the cache behavior is easy to reproduce without a second database.
