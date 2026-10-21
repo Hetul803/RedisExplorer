@@ -1,0 +1,282 @@
+// Syntax and examples match the command subset implemented by the API.
+const groups = {
+  Strings: [
+    [
+      "SET",
+      "key value [EX seconds]",
+      'SET demo:greeting "Hello Redis"',
+      "Create or replace text. EX adds an expiration. Returns OK.",
+    ],
+    [
+      "GET",
+      "key",
+      "GET demo:greeting",
+      "Read text. A missing key returns null.",
+    ],
+    [
+      "MGET",
+      "key [key ...]",
+      "MGET demo:greeting demo:missing",
+      "Read several strings in the same order, including null for missing keys.",
+    ],
+    [
+      "STRLEN",
+      "key",
+      "STRLEN demo:greeting",
+      "Read the string length in bytes. Missing keys return zero.",
+    ],
+    [
+      "APPEND",
+      "key value",
+      'APPEND demo:greeting " again"',
+      "Append text and return the new byte length.",
+    ],
+    [
+      "INCR",
+      "key",
+      "INCR demo:counter",
+      "Add one to an integer counter. Missing counters start at zero.",
+    ],
+    [
+      "DECR",
+      "key",
+      "DECR demo:counter",
+      "Subtract one from an integer counter.",
+    ],
+    [
+      "INCRBY",
+      "key integer",
+      "INCRBY demo:counter 5",
+      "Add the integer and return the new counter.",
+    ],
+    [
+      "DECRBY",
+      "key integer",
+      "DECRBY demo:counter 2",
+      "Subtract the integer and return the new counter.",
+    ],
+  ],
+  Lists: [
+    [
+      "LPUSH",
+      "key value [value ...]",
+      "LPUSH demo:queue first second",
+      "Insert at the front; returns list length. Multiple values are inserted in reverse order.",
+    ],
+    [
+      "RPUSH",
+      "key value [value ...]",
+      "RPUSH demo:queue first second",
+      "Append items; returns list length.",
+    ],
+    [
+      "LRANGE",
+      "key start stop",
+      "LRANGE demo:queue 0 -1",
+      "Read inclusive indexes. Zero is the first item; -1 is the last.",
+    ],
+    [
+      "LPOP",
+      "key",
+      "LPOP demo:queue",
+      "Remove and return the first item, or null if empty.",
+    ],
+    [
+      "RPOP",
+      "key",
+      "RPOP demo:queue",
+      "Remove and return the last item, or null if empty.",
+    ],
+    [
+      "LLEN",
+      "key",
+      "LLEN demo:queue",
+      "Return item count. Missing lists have length zero.",
+    ],
+    [
+      "LINDEX",
+      "key index",
+      "LINDEX demo:queue 0",
+      "Read an item without removing it; missing indexes return null.",
+    ],
+    [
+      "LSET",
+      "key index value",
+      "LSET demo:queue 0 updated",
+      "Replace an existing item. Out-of-range indexes fail. Returns OK.",
+    ],
+    [
+      "LREM",
+      "key count value",
+      "LREM demo:queue 1 first",
+      "Remove matching values. Positive count starts at the front; negative at the back; zero removes all matches.",
+    ],
+    [
+      "LTRIM",
+      "key start stop",
+      "LTRIM demo:queue 0 4",
+      "Keep only the inclusive range and discard other items. Returns OK.",
+    ],
+  ],
+  Sets: [
+    [
+      "SADD",
+      "key member [member ...]",
+      "SADD demo:tags redis nosql",
+      "Add unique members; returns the count newly added.",
+    ],
+    [
+      "SMEMBERS",
+      "key",
+      "SMEMBERS demo:tags",
+      "Read all members. Order is not guaranteed.",
+    ],
+    [
+      "SREM",
+      "key member [member ...]",
+      "SREM demo:tags nosql",
+      "Remove members; returns the count removed.",
+    ],
+    ["SCARD", "key", "SCARD demo:tags", "Return the number of members."],
+    [
+      "SISMEMBER",
+      "key member",
+      "SISMEMBER demo:tags redis",
+      "Return 1 when the member exists, otherwise 0.",
+    ],
+    [
+      "SPOP",
+      "key",
+      "SPOP demo:tags",
+      "Remove and return a random member, or null if empty.",
+    ],
+    [
+      "SRANDMEMBER",
+      "key",
+      "SRANDMEMBER demo:tags",
+      "Read a random member without removing it.",
+    ],
+    [
+      "SUNION",
+      "key [key ...]",
+      "SUNION demo:tags demo:other",
+      "Return members in any supplied set. Does not store the result.",
+    ],
+    [
+      "SINTER",
+      "key [key ...]",
+      "SINTER demo:tags demo:other",
+      "Return members shared by every supplied set.",
+    ],
+    [
+      "SDIFF",
+      "key [key ...]",
+      "SDIFF demo:tags demo:other",
+      "Return members of the first set absent from subsequent sets.",
+    ],
+  ],
+  Hashes: [
+    [
+      "HSET",
+      "key field value",
+      "HSET demo:product stock 10",
+      "Create or update one field; returns 1 for a new field, 0 for an update.",
+    ],
+    [
+      "HGET",
+      "key field",
+      "HGET demo:product stock",
+      "Read a field; missing fields return null.",
+    ],
+    ["HGETALL", "key", "HGETALL demo:product", "Read all fields and values."],
+    [
+      "HDEL",
+      "key field [field ...]",
+      "HDEL demo:product stock",
+      "Remove fields; returns how many were removed. The last removal deletes the key.",
+    ],
+    [
+      "HEXISTS",
+      "key field",
+      "HEXISTS demo:product stock",
+      "Return 1 if this field exists, otherwise 0.",
+    ],
+    ["HLEN", "key", "HLEN demo:product", "Return field count."],
+    ["HKEYS", "key", "HKEYS demo:product", "Read field names."],
+    ["HVALS", "key", "HVALS demo:product", "Read field values."],
+    [
+      "HMGET",
+      "key field [field ...]",
+      "HMGET demo:product stock name",
+      "Read field values in the requested order, including null for missing fields.",
+    ],
+    [
+      "HINCRBY",
+      "key field integer",
+      "HINCRBY demo:product stock -1",
+      "Adjust an integer field; missing fields start at zero. Returns the new value.",
+    ],
+    [
+      "HINCRBYFLOAT",
+      "key field number",
+      "HINCRBYFLOAT demo:product price 0.5",
+      "Adjust a numeric field by a decimal and return its new value.",
+    ],
+  ],
+  "Keys & expiration": [
+    ["PING", "", "PING", "Check the connection. Returns PONG."],
+    [
+      "DEL",
+      "key",
+      "DEL demo:greeting",
+      "Permanently remove one key; returns 1 if removed, otherwise 0.",
+    ],
+    [
+      "EXISTS",
+      "key [key ...]",
+      "EXISTS demo:greeting",
+      "Return how many supplied keys exist.",
+    ],
+    [
+      "TYPE",
+      "key",
+      "TYPE demo:greeting",
+      "Return the data type, or none for an absent key.",
+    ],
+    [
+      "TTL",
+      "key",
+      "TTL demo:greeting",
+      "Remaining seconds: -1 means no expiration; -2 means absent.",
+    ],
+    [
+      "PTTL",
+      "key",
+      "PTTL demo:greeting",
+      "Remaining milliseconds: -1 means no expiration; -2 means absent.",
+    ],
+    [
+      "EXPIRE",
+      "key seconds",
+      "EXPIRE demo:greeting 60",
+      "Set expiration from 1 to 31536000 seconds. Returns 1 if applied, otherwise 0.",
+    ],
+    [
+      "PERSIST",
+      "key",
+      "PERSIST demo:greeting",
+      "Remove expiration. Returns 1 if removed, otherwise 0.",
+    ],
+  ],
+};
+export const commandGroups = Object.keys(groups);
+export const commandReference = Object.entries(groups).flatMap(
+  ([group, rows]) =>
+    rows.map(([name, args, example, description]) => ({
+      group,
+      name,
+      args,
+      example,
+      description,
+    })),
+);
