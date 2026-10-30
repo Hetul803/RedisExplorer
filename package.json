@@ -9,7 +9,12 @@
     "dev:client": "npm --prefix frontend run dev",
     "build": "npm --prefix frontend run build",
     "test": "npm --prefix backend test",
-    "start": "npm --prefix backend start"
+    "start": "npm --prefix backend start",
+    "redis:start": "docker compose up -d --wait redis",
+    "dev:local": "npm run redis:start && npm run dev",
+    "test:integration": "npm --prefix backend run test:integration"
   },
-  "devDependencies": { "concurrently": "^9.1.2" }
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
 }
