@@ -2,8 +2,8 @@ node_modules/
 **/node_modules/
 dist/
 **/dist/
-.env
-**/.env
+.env*
+**/.env*
 coverage/
 .DS_Store
 npm-debug.log*

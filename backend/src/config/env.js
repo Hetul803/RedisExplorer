@@ -1,17 +1,13 @@
-// Read at startup, after dotenv has loaded the root .env file.
 export function getConfig(env = process.env) {
   const production = env.NODE_ENV === "production";
-  const port = Number(env.PORT || 3001);
+  const port = env.PORT ? Number(env.PORT) : undefined;
   const cacheTtl = Number(env.CACHE_TTL_SECONDS || 60);
-  if (!Number.isInteger(port) || port < 1 || port > 65535)
+  if (port !== undefined && (!Number.isInteger(port) || port < 1 || port > 65535))
     throw new Error("PORT must be between 1 and 65535");
   if (!Number.isInteger(cacheTtl) || cacheTtl < 1 || cacheTtl > 3600)
     throw new Error("CACHE_TTL_SECONDS must be between 1 and 3600");
-  if (production && !env.REDIS_URL)
-    throw new Error("REDIS_URL is required in production");
-  const origins = (
-    env.CLIENT_ORIGIN || (production ? "" : "http://localhost:5173")
-  )
+  if (production && !env.REDIS_URL) throw new Error("REDIS_URL is required in production");
+  const origins = (env.CLIENT_ORIGIN || "")
     .split(",")
     .map((value) => value.trim())
     .filter(Boolean);
@@ -27,6 +23,6 @@ export function getConfig(env = process.env) {
     port,
     cacheTtl,
     origins,
-    redisUrl: env.REDIS_URL || "redis://localhost:6379",
+    redisUrl: env.REDIS_URL,
   };
 }

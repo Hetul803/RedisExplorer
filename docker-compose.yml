@@ -3,7 +3,7 @@ services:
     image: redis:7-alpine
     command: ["redis-server", "--appendonly", "yes"]
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:?Set REDIS_PORT in the root .env file}:6379"
     volumes:
       - redis_data:/data
     healthcheck:

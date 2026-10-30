@@ -6,6 +6,8 @@ import { createApp } from "./app.js";
 
 dotenv.config({ path: fileURLToPath(new URL("../../.env", import.meta.url)) });
 const config = getConfig();
+if (!config.port) throw new Error("PORT is required");
+if (!config.redisUrl) throw new Error("REDIS_URL is required");
 const redis = createRedisClient(config.redisUrl);
 try {
   await redis.connect();

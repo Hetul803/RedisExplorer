@@ -1,4 +1,3 @@
-// Syntax and examples match the command subset implemented by the API.
 const groups = {
   Strings: [
     [
